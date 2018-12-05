@@ -24,3 +24,6 @@
 /dist/
 /nbdist/
 /.nb-gradle/
+
+# secret
+/DogChat-5d94d9392a12.json

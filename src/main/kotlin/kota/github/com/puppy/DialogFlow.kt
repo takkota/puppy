@@ -1,6 +1,14 @@
 package kota.github.com.puppy
 
+import com.google.api.gax.core.CredentialsProvider
+import com.google.api.gax.core.FixedCredentialsProvider
+import com.google.auth.Credentials
+import com.google.auth.oauth2.AccessToken
+import com.google.auth.oauth2.ServiceAccountCredentials
 import com.google.cloud.dialogflow.v2.*
+import com.google.gson.FieldNamingPolicy
+import com.google.gson.GsonBuilder
+import kota.github.com.puppy.model.GoogleApplicationCredentials
 import kota.github.com.puppy.properties.DialogFlowProperties
 import kota.github.com.puppy.properties.PropertiesReader
 import kota.github.com.puppy.utils.LogUtil
@@ -33,8 +41,19 @@ class DialogFlow {
         val projectId = propertiesReader.getDialogFlowProjectId()
 
         lateinit var queryResult: QueryResult
-        SessionsClient.create().use { sessionsClient ->
-            // Set the session name using the sessionId (UUID) and projectID (my-project-id)
+        val jsonStr = System.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+
+        val gson = GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).create()
+        //val credentials = gson.fromJson<GoogleApplicationCredentials>(jsonStr, GoogleApplicationCredentials::class.java)
+        val client = SessionsClient.create(
+                SessionsSettings.newBuilder().setCredentialsProvider(
+                        FixedCredentialsProvider.create(
+                                ServiceAccountCredentials.fromStream(jsonStr.byteInputStream())
+                        )
+                ).build()
+        )
+        client.use { sessionsClient ->
+            // Set the session name using the session_id (UUID) and projectID (my-project-id)
             val session = SessionName.of(projectId, sessionId)
 
             // Detect intents for each text input

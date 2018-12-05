@@ -18,8 +18,8 @@ class ChatController {
 
     //@RequestMapping(value = ["/query"], method = [RequestMethod.POST])
     //fun queryResponse(@RequestBody query: QueryMessage): ResponseMessage {
-    //    val response = dialogFlow.detectIntentTexts(query.queryMessage, query.sessionId, query.eventName)
-    //    return ResponseMessage(response, query.sessionId)
+    //    val response = dialogFlow.detectIntentTexts(query.queryMessage, query.session_id, query.eventName)
+    //    return ResponseMessage(response, query.session_id)
     //}
 
     @GetMapping
